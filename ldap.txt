@@ -1,0 +1,175 @@
+-> make 2 vm (one is Master & other is Client)
+
+-> make the below commands run for both the vm
+-> make hostname as master & Client by 
+	#hostnamectl set-hostname master/client
+
+-> make firewall stop & disable
+	#systemctl stop firewalld
+	#systemctl disable firewalld
+	#systemctl status firewalld
+
+-> make enforcing to disabled in selinux/config file
+	#vim /etc/selinux/config    .....for permanent
+or	# setenforce 0
+	#getenforce
+
+-> make enter in hosts file  like - 192.168.67.140 master
+	#vim /etc/hosts
+
+-> restart the machine by
+	#init 6 or # exec bash
+
+-> On Master Node:-
+-> install the packages 
+	# yum install openldap-servers openldap-clients
+
+
+
+
+
+
+
+
+
+
+
+  hostname
+    2  hostnamectl set-hostname master
+    3  hostname
+    4  init 6
+    5  getenforce
+    6  systemctl status firewalld
+    7  ip a
+    8  vim /etc/hosts
+    9  yum install openldap-servers openldap-clients
+   10  cat cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+   11  cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
+   12  chown ldap. /var/lib/ldap/DB_CONFIG
+   13  vim /etc/hosts
+   14  systemctl start slapd
+   15  systemctl enable slapd
+   16  slappasswd
+   17  vim password.txt
+   18  rm password.txt
+   19  vim password.ldif
+   20  ldapadd -Y EXTERNAL -H ldapi:/// -f password.ldif
+   21  ldapadd -Y EXTERNAL -H ldapi:/// -f password.ldif
+   22  vim password.ldif
+   23  ldapadd -Y EXTERNAL -H ldapi:/// -f password.ldif
+   24  cat /etc/openldap/schema/cosine.
+   25  cat /etc/openldap/schema/cosine.ldif 
+   26  ldapadd -Y EXTERNAL -H ldapi:/// -f  /etc/openldap/schema/cosine.ldif 
+   27  ldapadd -Y EXTERNAL -H ldapi:/// -f  /etc/openldap/schema/nis.ldif 
+   28  ldapadd -Y EXTERNAL -H ldapi:/// -f  /etc/openldap/schema/inetorgperson.ldif 
+   29  vim chdomain.ldif
+   30  vim chdomain.ldif
+   31  vim password.ldif
+   32  vim chdomain.ldif
+   33  vim chdomain.ldif
+   34  cat chdomain.ldif
+   35  ldapmodify -Y EXTERNAL -H ldapi:// -f chdomain.ldif 
+   36  vim chdomain.ldif
+   37  vim chdomain.ldif
+   38  ldapmodify -Y EXTERNAL -H ldapi:// -f chdomain.ldif 
+   39  vim chdomain.ldif
+   40  ldapmodify -Y EXTERNAL -H ldapi:// -f chdomain.ldif 
+   41  vim chdomain.ldif
+   42  ls
+   43  vim basedomain.ldif
+   44  vim basedomain.ldif
+   45  man --help
+   46  ldap add -x -D cn=Manager,dc=cdac,dc=in -W -f basedomain.ldif 
+   47  ldapadd -x -D cn=Manager,dc=cdac,dc=in -W -f basedomain.ldif 
+   48  cat basedomain.ldif
+   49  vim ldapuser.ldif
+   50  vim password.ldif
+   51  vim ldapuser.ldif
+   52  ldapadd -x -D cn=Manager,dc=cdac,dc=in -W -f ladapuser.ldif 
+   53  ldapadd -x -D cn=Manager,dc=cdac,dc=in -W -f ldapuser.ldif 
+   54  ldapsearch -x cn=user1 -b dc=cdac,dc=in
+   55  ip a
+   56  vim chdomain.ldif 
+   57  vim basedomain.ldif 
+   58  vim ldapuser.ldif
+
+
+
+
+
+
+
+
+
+
+dn: olcDatabase={1}monitor,cn=config
+changetype: modify
+replace: olcAccess
+olcAccess: {0}to * by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" read by dn.base="cn=Manager,dc=cdac,dc=in" read by * none
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: dc=cdac,dc=in
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootDn
+olcRootDN: cn=Manager,dc=cdac,dc=in
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+add: olcRootPW
+olcRootPW: {SSHA}el6dnumyH8aoxoYsl8YVzimMco3JALA9 
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+add: olcAccess
+olcAccess: {0}to attrs=userPassword,shadowLastChange by dn="cn=Manager,dc=cdac,dc=in" write by anonymous auth by self write by * none
+olcAccess: {1}to dn.base="" by * read
+olcAccess: {2}to * by dn="cn=Manager,dc=cdac,dc=in" write by * read
+
+
+
+
+on client node	
+ 
+    2  hostnamectl set-hostname client
+    3  hostname
+    4  init 6
+    5  vim /etc/selinux/config 
+    6  systemctl stop firewalld
+    7  systemctl disable firewalld
+    8  init  6
+    9  getenforce
+   10  systemctl status firewalld
+   11  ip a
+   12  hostname
+   13  vim /etc/hosts
+   14  vim /etc/hosts
+   15  yum install openldap-clients nss-pam-ldap
+   16  authconfig --enbleldap --enbleldapauth --ldapserver
+   17  authconfig --enbleldap --enbleldapauth --ldapserver=192.168.67.140 --ldapbasedn="dc=cdac,dc=in" --enablemkhomedir --update
+   18  authconfig --enbleldap --enableldapauth --ldapserver=192.168.67.140 --ldapbasedn="dc=cdac,dc=in" --enablemkhomedir --update
+   19  authconfig --enableldap --enableldapauth --ldapserver=192.168.67.140 --ldapbasedn="dc=cdac,dc=in" --enablemkhomedir --update
+   20  systemctl start nslcd
+   21  systemctl start nslcd.service
+   22  systemctl start nslcd
+   23  systemctl status nslcd
+   24  yum install openldap-clients nss-pam-ldapd
+   25  authconfig --enableldap --enableldapauth --ldapserver=192.168.67.140 --ldapbasedn="dc=cdac,dc=in" --enablemkhomedir --update
+   26  systemctl start nslcd
+   27  systemctl status nslcd
+   28  ldapsearch -x
+   29  getent passwd
+   30  vim /etc/nsswitch.conf
+   31  su user1
+   32  vim /etc/nsswitch.conf
+   33  ssh user1@localhost
+   34  ssh user1@localhost
+   35  ldappasswd -s ldaptest -W -D "cn=Manager,dc=cdac,dc=in" -x "uid=user1,ou=People,dc=cdac,dc=in"
+   36  vim /etc/pam.d/password-auth-ac 
+   37  ssh user1@localhost
+   38  ssh user1@localhost
+   39  ldappasswd -s root -W -D "cn=Manager,dc=cdac,dc=in" -x "uid=user1,ou=People,dc=cdac,dc=in"
+   40  ssh user1@localhost
